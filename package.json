@@ -1,0 +1,31 @@
+{
+  "name": "webrays",
+  "version": "0.8.0",
+  "description": "ray tracing on the Web",
+  "main": "dist/webrays.js",
+  "homepage": "https://github.com/phasmatic3d/webrays",
+  "directories": {
+    "doc": "doc",
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phasmatic3d/webrays.git"
+  },
+  "files": [
+    "doc",
+    "dist/*.js",
+    "dist/*.wasm"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ray-tracing",
+    "web",
+    "ray-intersection",
+    "ray-casting"
+  ],
+  "author": "Phasmatic",
+  "license": "Apache-2.0"
+}

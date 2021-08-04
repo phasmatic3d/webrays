@@ -1,0 +1,11 @@
+#webrays-main {
+    text-align:center;
+ }
+
+#webrays-main-canvas {
+    border: 2px solid black;
+    max-width:  1024px;
+    max-height:  768px;
+    width:  80vw;
+    height: 80vw;
+}
