@@ -11,6 +11,12 @@ set(WEBRAYS_LIBRARY_SOURCES webrays.cpp
 
 project(webrays)
 
+if(SINGLE_FILE)
+  set(EMBED_WASM 1)
+else()
+  set(EMBED_WASM 0)
+endif()
+
 if (EMSCRIPTEN)
 add_library (${PROJECT_NAME} ${WEBRAYS_LIBRARY_SOURCES})
 else()
@@ -28,7 +34,7 @@ if (EMSCRIPTEN)
     set(CMAKE_CXX_CREATE_STATIC_LIBRARY "<CMAKE_AR> <OBJECTS> <LINK_FLAGS> -o <TARGET>")
 
     set(CMAKE_C_FLAGS_ALL_CONFIGS "-fno-exceptions -s WASM=1 -Wall -Wextra -Wno-double-promotion -Wno-unused-parameter -Wno-unused-variable -Wno-sign-compare -Wno-missing-braces")
-    set(CMAKE_LINKER_FLAGS_ALL_CONFIGS "-lEGL -lGLESv2 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s MODULARIZE=1 -s EXPORT_ES6=1 -s WASM=1 -s EXPORT_NAME=\"'createWebRaysModule'\" -s ABORTING_MALLOC=0 -s ALLOW_MEMORY_GROWTH=1 -s FULL_ES3=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s GL_PREINITIALIZED_CONTEXT=1 -s EXPORTED_RUNTIME_METHODS=\"['cwrap','GL','UTF8ToString','lengthBytesUTF8','stringToUTF8']\" -s EXPORTED_FUNCTIONS=\"['_free', '_malloc']\" --extern-pre-js \"${CMAKE_SOURCE_DIR}/src/webrays_loader.js\"")
+    set(CMAKE_LINKER_FLAGS_ALL_CONFIGS "-lEGL -lGLESv2 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s MODULARIZE=1 -s EXPORT_ES6=1 -s WASM=1 -s EXPORT_NAME=\"'createWebRaysModule'\" -s ABORTING_MALLOC=0 -s ALLOW_MEMORY_GROWTH=1 -s FULL_ES3=1 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s GL_PREINITIALIZED_CONTEXT=1 -s SINGLE_FILE=${EMBED_WASM} -s EXPORTED_RUNTIME_METHODS=\"['cwrap','GL','UTF8ToString','lengthBytesUTF8','stringToUTF8']\" -s EXPORTED_FUNCTIONS=\"['_free', '_malloc']\" --extern-pre-js \"${CMAKE_SOURCE_DIR}/src/webrays_loader.js\"")
 
     set(CMAKE_C_FLAGS_RELEASE "-O3 ${CMAKE_C_FLAGS_ALL_CONFIGS}")
     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "-O3 ${CMAKE_LINKER_FLAGS_ALL_CONFIGS}")
@@ -83,12 +89,16 @@ endif()
 target_include_directories(${PROJECT_NAME} PRIVATE "../include")
 if (EMSCRIPTEN)
 
-  install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.wasm" DESTINATION webrays/js/common)
+  if(NOT SINGLE_FILE)
+    install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.wasm" DESTINATION webrays/js/common)
+  endif()
   install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.js" DESTINATION webrays/js/common)
   install(DIRECTORY ../examples/web/ DESTINATION webrays)
 
   if(PREPARE_FOR_PUBLISH)
-    install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.wasm" DESTINATION ${CMAKE_SOURCE_DIR}/dist)
+    if(NOT SINGLE_FILE)
+      install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.wasm" DESTINATION ${CMAKE_SOURCE_DIR}/dist)
+    endif()
     install(FILES "${CMAKE_BINARY_DIR}/src/${WEBRAYS_LIBRARY_NAME}.js" DESTINATION ${CMAKE_SOURCE_DIR}/dist)
   endif()
 else()

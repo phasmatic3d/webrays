@@ -4,6 +4,7 @@ project(webrays VERSION 0.8.0)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(BUILD_EXAMPLES false CACHE BOOL "Should the examples be built")
+set(SINGLE_FILE false CACHE BOOL "Embed WASM binary into emscripten's JS glue code")
 set(PREPARE_FOR_PUBLISH false CACHE BOOL "Should the library be packaged for publishing")
 mark_as_advanced(PREPARE_FOR_PUBLISH)
 
